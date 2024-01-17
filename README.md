@@ -7,11 +7,16 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - The main README will be here for now.
 - [PadPal-CLI](https://github.com/ssebs/PadPal-CLI/)
   - This is the CLI for syncing a workspace / your notes to your computer.
-- [PadPal-Web](https://github.com/ssebs/PadPal-Web/)
-  - This is the web app + Electron desktop app to interact with a hosted PadPal-Server.
 - [PadPal-Mobile](https://github.com/ssebs/PadPal-Mobile)
   - This is the mobile app to interact with a hosted PadPal-Server.
 
+## Feature list for PadPal-Server
+### MVP
+- Tags 
+- Save notes in folder structure
+
+### Wish
+- 
 
 ## Architecture
 - Server:
@@ -34,13 +39,12 @@ This repo is a part of a larger PadPal project. The following is a list of the r
     - Similar to google keep, if they have a MD text editor lib
     - Android home screen widget to view / open / create new notes like keeps'
     - WYSIWYG or MD Text (with helpers)
-  - Web app
+    - Exports for Android + Web + iOS?
     - If flutter doesn't have a good MD WYSIWYG editor
     - JS lib for editing, material-ui for viewing what files you have, etc.
     - SSO?
     - WYSIWYG or MD Text (with helpers)
-  - Electron app
-    - Uses above web app, but allows for saving / loading files from disk.
+    - Save / load files from disk
 - How it will work:
 - POST /note/new with contents + author + metadata
 - Server will save file, record version with now() in DB
