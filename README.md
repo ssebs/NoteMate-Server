@@ -61,7 +61,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
     - WYSIWYG or MD Text (with helpers)
     - Save / load files from disk
 - How it will work:
-- POST /note/new with contents + author + metadata
+- POST /notes with contents + author + metadata
 - Server will save file, record version with now() in DB
 - 201 response
 - UI's will sync periodically, using same logic as CLI sync
