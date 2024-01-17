@@ -12,8 +12,23 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 
 ## Feature list for PadPal-Server
 ### MVP
-- Tags 
-- Save notes in folder structure
+- Save notes as files in folder structure
+- SaveProvider (allow to save files in diff places)
+  - Local path (container volume mount)
+  - Google Drive folder?
+  - S3 bucket?
+  - Under the hood, use interfaces to accomplish this
+- REST API
+  - create goroutine on each accept
+    - So if there's a 500, it will not crash everything
+  - support various errors, 404, 401, 500
+  - JWT
+  - See [REST API Doc](./REST-API.md)
+- Tag support
+- Keep versions of each note
+  - Allow for rollback
+  - Git?
+- 
 
 ### Wish
 - 
