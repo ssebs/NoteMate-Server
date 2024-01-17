@@ -10,6 +10,25 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 - [PadPal-Mobile](https://github.com/ssebs/PadPal-Mobile)
   - This is the mobile app to interact with a hosted PadPal-Server.
 
+## Usage
+> replace this section once the project is up and running
+
+### Docker
+- Install docker
+- Building:
+  - `git clone github.com/ssebs/padpal-server`
+  - `cd padpal-server`
+  - `docker build -t padpal-server .`
+- Running:
+  - `docker run -d --rm padpal-server`
+- Unraid:
+  - TBD
+
+### Src
+- Install go > v1.21
+- `go get github.com/ssebs/padpal-server`
+- `go run cmd/main.go`
+
 ## Feature list for PadPal-Server
 ### MVP
 - Save notes as files in folder structure
@@ -79,3 +98,6 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 
 ## LICENSE
 [Apache License 2.0](./LICENSE)
+
+## External references / docs
+- https://pkg.go.dev/github.com/golang-jwt/jwt#example-package-GetTokenViaHTTP
