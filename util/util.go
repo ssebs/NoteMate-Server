@@ -8,16 +8,8 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 )
 
-// GotWantTest takes *testing.T
-func GotWantTest[T comparable](got, want T, t *testing.T) {
-	t.Helper()
-	if got != want {
-		t.Fatalf("got %v, want %v", got, want)
-	}
-}
-
 // ParseMDToHTML
-// Uses simplecss.org
+// Uses simplecss.org CSS
 func ParseMDToHTML(md []byte) []byte {
 	head := []byte(`<link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">`)
 
@@ -32,4 +24,14 @@ func ParseMDToHTML(md []byte) []byte {
 	renderer := html.NewRenderer(opts)
 
 	return markdown.Render(doc, renderer)
+}
+
+// TESTING STUFF //
+// GotWantTest takes *testing.T
+// Used for testing...
+func GotWantTest[T comparable](got, want T, t *testing.T) {
+	t.Helper()
+	if got != want {
+		t.Fatalf("got %v, want %v", got, want)
+	}
 }
