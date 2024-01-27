@@ -22,9 +22,9 @@ This repo is a part of a larger PadPal project. The following is a list of the r
       - [x] As rendered MD
   - [x] 404 / 500 error support
     - [x] Don't crash the server on 500
-- [ ] Deployable via Docker
-- [ ] Design Data Models
-  - [ ] Notes
+- [x] Deployable via Docker
+- Design Data Models
+  - [] Notes
   - [ ] Tags
   - [ ] Users + Auth
 - [ ] Save / Load data files
@@ -46,6 +46,9 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 - [ ] ...
 
 ### Docker
+
+https://hub.docker.com/r/ssebs/padpal-server
+
 - Install docker
 - Building:
   - `git clone github.com/ssebs/padpal-server`
@@ -55,6 +58,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - `docker run -d --rm ssebs/padpal-server`
 - Unraid:
   - TBD
+    - See https://selfhosters.net/docker/templating/templating/#114-shave-off-the-xml
 
 ### Src
 - Install go > v1.21

@@ -1,6 +1,7 @@
 package data
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/beevik/guid"
@@ -10,13 +11,13 @@ import (
 // ID is a GUID
 // LastUpdated is a time.Time in UTC
 type Note struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Contents    string    `json:"contents"`
-	Author      string    `json:"author"`
-	LastUpdated time.Time `json:"last_updated"`
-	Version     int       `json:"version"`
-	Active      bool      `json:"active"`
+	ID          *guid.Guid `json:"-"`
+	Title       string     `json:"title"`
+	Contents    string     `json:"contents"`
+	Author      string     `json:"author"`
+	LastUpdated time.Time  `json:"last_updated"`
+	Version     int        `json:"version"`
+	Active      bool       `json:"active"`
 }
 
 // NewNote will create a new note from the title, author, and contents.
@@ -24,7 +25,7 @@ type Note struct {
 // Retuns a *Note
 func NewNote(title, author, contents string) *Note {
 	return &Note{
-		ID:          guid.NewString(),
+		ID:          guid.New(),
 		Title:       title,
 		Contents:    contents,
 		Author:      author,
@@ -32,4 +33,17 @@ func NewNote(title, author, contents string) *Note {
 		Version:     1,
 		Active:      true,
 	}
+}
+
+// MarshalJSON customizes the JSON marshaling for the Note struct.
+// The ID field is represented as a string in the JSON output.
+func (n *Note) MarshalJSON() ([]byte, error) {
+	type Alias Note
+	return json.Marshal(&struct {
+		ID string `json:"id"`
+		*Alias
+	}{
+		ID:    n.ID.String(),
+		Alias: (*Alias)(n),
+	})
 }

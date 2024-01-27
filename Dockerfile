@@ -11,6 +11,8 @@ COPY ./ ./
 RUN go build -o ./bin/ ./...
 RUN chmod a+x bin/cmd
 
-EXPOSE 80
+ENV GIN_MODE=release
+
+EXPOSE 5000
 
 CMD ["/app/bin/cmd"]
