@@ -16,11 +16,12 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 ## Progres
 > keeping track of where I am / whats next to code / PM stuff
 
-- [ ] Create REST server
-  - [ ] GET /
-    - [ ] Server REST API docs?
-  - [ ] 404 / 500 error support
-    - [ ] Don't crash the server on 500
+- [x] Create REST server
+  - [x] GET /
+    - [x] Server REST API docs
+      - [x] As rendered MD
+  - [x] 404 / 500 error support
+    - [x] Don't crash the server on 500
 - [ ] Deployable via Docker
 - [ ] Design Data Models
   - [ ] Notes
