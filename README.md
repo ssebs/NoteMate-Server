@@ -24,7 +24,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
     - [x] Don't crash the server on 500
 - [x] Deployable via Docker
 - Design Data Models
-  - [] Notes
+  - [x] Notes
   - [ ] Tags
   - [ ] Users + Auth
 - [ ] Save / Load data files

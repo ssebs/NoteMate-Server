@@ -10,10 +10,6 @@ import (
 	"github.com/ssebs/padpal-server/util"
 )
 
-func APIFoo() string {
-	return "APIFoo"
-}
-
 // HandleAndServe will handle the routes and serve HTTP
 // contains a list of route handlers
 func HandleAndServe(host string, port int) {
@@ -29,6 +25,7 @@ func HandleAndServe(host string, port int) {
 	log.Fatal(router.Run(hostPort))
 }
 
+// rootHandler renders the REST-API.md file as HTML for /
 func rootHandler(c *gin.Context) {
 	// get contents of ./REST-API.md and return
 	md, err := os.ReadFile("./REST-API.md")
