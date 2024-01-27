@@ -9,5 +9,5 @@ import (
 func main() {
 	fmt.Println("PadPal Server")
 
-	fmt.Println(api.APIFoo())
+	api.HandleAndServe("", 5000)
 }
