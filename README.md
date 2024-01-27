@@ -13,14 +13,45 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 ## Usage
 > replace this section once the project is up and running
 
+## Progres
+> keeping track of where I am / whats next to code / PM stuff
+
+- [ ] Create REST server
+  - [ ] GET /
+    - [ ] Server REST API docs?
+  - [ ] 404 / 500 error support
+    - [ ] Don't crash the server on 500
+- [ ] Deployable via Docker
+- [ ] Design Data Models
+  - [ ] Notes
+  - [ ] Tags
+  - [ ] Users + Auth
+- [ ] Save / Load data files
+  - [ ] NOTE: Use providers such that the file based storage can be changed later
+  - [ ] Create
+  - [ ] Read
+    - [ ] List all notes
+    - [ ] Details for 1 note
+    - [ ] List versions for 1 note
+  - [ ] Update
+    - [ ] Update to 
+    - [ ] Restore from version
+  - [ ] Delete
+- [ ] Version history
+  - [ ] git?
+  - [ ] db?
+- [ ] ...
+- [ ] Auth
+- [ ] ...
+
 ### Docker
 - Install docker
 - Building:
   - `git clone github.com/ssebs/padpal-server`
   - `cd padpal-server`
-  - `docker build -t padpal-server .`
+  - `docker build -t ssebs/padpal-server .`
 - Running:
-  - `docker run -d --rm padpal-server`
+  - `docker run -d --rm ssebs/padpal-server`
 - Unraid:
   - TBD
 
