@@ -11,9 +11,9 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - This is the mobile app to interact with a hosted PadPal-Server.
 
 ## Usage
-> replace this section once the project is up and running
+> TODO: replace this section once the project is up and running
 
-## Progres
+## Progress
 > keeping track of where I am / whats next to code / PM stuff
 
 - [x] Create REST server
@@ -27,18 +27,20 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - [x] Notes
   - [ ] Tags
   - [ ] Users + Auth
+- [x] Create CRUDProviders interface to support:
+    - [x] Create
+    - [x] Read
+      - [x] List all notes
+      - [x] Details for 1 note
+      - [x] List versions for 1 note
+      - [x] Details for version # of note
+    - [x] Update
+      - [x] Update to...
+      - [x] Restore from version
+    - [x] Delete
 - [ ] Save / Load data files
-  - [ ] NOTE: Use providers such that the file based storage can be changed later
-  - [ ] Create
-  - [ ] Read
-    - [ ] List all notes
-    - [ ] Details for 1 note
-    - [ ] List versions for 1 note
-  - [ ] Update
-    - [ ] Update to 
-    - [ ] Restore from version
-  - [ ] Delete
-- [ ] Version history
+  - [ ] File Provider
+- [ ] Implement Version history
   - [ ] git?
   - [ ] db?
 - [ ] ...
@@ -46,22 +48,23 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 - [ ] ...
 
 ### Docker
+> TODO: Update docs once volume mount is ready!
 
-https://hub.docker.com/r/ssebs/padpal-server
-
-- Install docker
-- Building:
-  - `git clone github.com/ssebs/padpal-server`
-  - `cd padpal-server`
-  - `docker build -t ssebs/padpal-server .`
-- Running:
-  - `docker run -d --rm ssebs/padpal-server`
+- Install [Docker](https://www.docker.com/get-started/)/[Podman](https://podman.io/docs/installation)
+- Running DockerHub image [ssebs/padpal-server](https://hub.docker.com/r/ssebs/padpal-server):
+  - `docker run -d -p 5000:5000 --rm ssebs/padpal-server`
+- Local / build:
+  - Building:
+    - `git clone github.com/ssebs/padpal-server`
+    - `cd padpal-server`
+    - `docker build -t ssebs/padpal-server .`
+  - Running:
+    - `docker run -d -p 5000:5000 --rm ssebs/padpal-server`
 - Unraid:
-  - TBD
-    - See https://selfhosters.net/docker/templating/templating/#114-shave-off-the-xml
+  - TODO
 
-### Src
-- Install go > v1.21
+### Run from src
+- Install [go > v1.21](https://go.dev/doc/install)
 - `go get github.com/ssebs/padpal-server`
 - `go run cmd/main.go`
 
@@ -85,8 +88,6 @@ https://hub.docker.com/r/ssebs/padpal-server
   - Git?
 - 
 
-### Wish
-- 
 
 ## Architecture
 - Server:
@@ -137,3 +138,4 @@ https://hub.docker.com/r/ssebs/padpal-server
 
 ## External references / docs
 - https://pkg.go.dev/github.com/golang-jwt/jwt#example-package-GetTokenViaHTTP
+- UNRAID https://selfhosters.net/docker/templating/templating/#114-shave-off-the-xml
