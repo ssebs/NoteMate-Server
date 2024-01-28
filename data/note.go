@@ -8,6 +8,14 @@ import (
 	"github.com/beevik/guid"
 )
 
+// NoteBind used for form data to create a Note
+// TODO: replace the name of this!
+type NoteBind struct {
+	Title    string `json:"title"`
+	Contents string `json:"contents"`
+	Author   string `json:"author"`
+}
+
 // Note
 // ID is a GUID
 // LastUpdated is a time.Time in UTC
@@ -35,6 +43,12 @@ func NewNote(title, author, contents string) *Note {
 		Version:     1,
 		Active:      true,
 	}
+}
+
+// NewNoteFromBind will create a new note from a mapped NoteBind
+func NewNoteFromBind(nb NoteBind) *Note {
+	note := NewNote(nb.Title, nb.Author, nb.Contents)
+	return note
 }
 
 // MarshalJSON customizes the JSON marshaling for the Note struct.

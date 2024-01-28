@@ -16,14 +16,26 @@ import (
 func HandleAndServe(host string, port int) {
 	hostPort := fmt.Sprintf("%s:%d", host, port)
 
+	// TODO: replace_me with an env var or CLI flag
+	provider := data.NewSampleProvider()
+
+	// init gin + HTTP handlers
 	router := gin.Default()
+	initHandlers(router, provider)
 
-	// Handlers
-	router.GET("/", rootHandler)
-	router.GET("/notes", notesHandler)
-
-	// Run & log the server once it errors
+	// Run the server
 	log.Fatal(router.Run(hostPort))
+}
+
+// initHandlers is where to define new HTTP handlers
+// requires the current router, and a CRUDProvider
+func initHandlers(router *gin.Engine, provider data.CRUDProvider) {
+	// Default handler
+	router.GET("/", rootHandler)
+	// Notes handlers
+	router.GET("/notes", GETNotesHandler(provider))
+	router.POST("/notes", POSTNotesHandler(provider))
+
 }
 
 // rootHandler renders the REST-API.md file as HTML for /
@@ -40,8 +52,4 @@ func rootHandler(c *gin.Context) {
 	html := util.ParseMDToHTML(md)
 	c.Header("content-type", "text/html")
 	c.String(200, string(html))
-}
-
-func notesHandler(c *gin.Context) {
-	c.JSON(200, data.GetSampleNotes())
 }

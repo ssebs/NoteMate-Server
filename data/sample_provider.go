@@ -102,7 +102,7 @@ func (p *SampleProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 }
 
 // RestoreNote restores a Note to a specific version, append version #
-func RestoreNote(id guid.Guid, version int) (*Note, error) {
+func (p *SampleProvider) RestoreNote(id guid.Guid, version int) (*Note, error) {
 	return nil, errors.New("method not implemented")
 }
 
