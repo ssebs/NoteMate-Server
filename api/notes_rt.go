@@ -11,12 +11,12 @@ import (
 
 /*
 GET
-	/notes?q=
-	/notes/:id
+x	/notes?q=
+x	/notes/:id
 	/notes/:id?version=
 	TODO: /versions/notes
 POST
-	/notes
+x	/notes
 PUT
 	/notes/:id
 	/notes/:id?version=
@@ -26,6 +26,7 @@ DELETE
 */
 
 // GET //
+// GETNotesHandler uses a CRUDProvider and handles GET /notes?q=
 func GETNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		qry := c.Query("q")
@@ -39,6 +40,7 @@ func GETNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	}
 }
 
+// GETNoteByIDHandler uses a CRUDProvider and handles GET /notes/:id
 func GETNoteByIDHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	// Get ID from param
 	return func(c *gin.Context) {
@@ -59,6 +61,7 @@ func GETNoteByIDHandler(provider data.CRUDProvider) gin.HandlerFunc {
 }
 
 // POST //
+// POSTNotesHandler uses a CRUDProvider and handles POST /notes
 func POSTNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Map post data to NoteBind, then create Note from that
