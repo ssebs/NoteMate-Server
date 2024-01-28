@@ -1,3 +1,4 @@
+// api.go - REST API for PadPal-Server
 package api
 
 import (

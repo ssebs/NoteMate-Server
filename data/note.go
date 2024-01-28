@@ -1,3 +1,4 @@
+// note.go
 package data
 
 import (
@@ -24,6 +25,7 @@ type Note struct {
 // LastUpdated, Version, and Active will be set by default
 // Retuns a *Note
 func NewNote(title, author, contents string) *Note {
+	// TODO: Move Version to a db, or somewhere else..
 	return &Note{
 		ID:          guid.New(),
 		Title:       title,

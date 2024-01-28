@@ -1,4 +1,4 @@
-// crud_providers = Create, Read, Update, Delete Providers.
+// crud_provider.go = Create, Read, Update, Delete Providers.
 // More funcs are available than just CRUD...
 // example of a provider: file, google drive, etc.
 package data

@@ -1,3 +1,4 @@
+// auth.go - fixme
 package api
 
 import (

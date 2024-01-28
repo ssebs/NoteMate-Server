@@ -1,22 +1,10 @@
+// utils_test.go
 package util
 
 import (
 	"strings"
 	"testing"
 )
-
-var md_txt = `# Title
-**bold**
-
-- li_1
-- li_2
-	- nested_1
-	- nested_2
-
-> quote
-
-[link_text](http://example.com/link_url)
-`
 
 func TestParseMDToHTML(t *testing.T) {
 	got := string(ParseMDToHTML([]byte(md_txt)))
@@ -75,3 +63,16 @@ func TestParseMDToHTML(t *testing.T) {
 
 	// t.Log(got)
 }
+
+var md_txt = `# Title
+**bold**
+
+- li_1
+- li_2
+	- nested_1
+	- nested_2
+
+> quote
+
+[link_text](http://example.com/link_url)
+`
