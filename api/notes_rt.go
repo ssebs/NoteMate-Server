@@ -2,13 +2,16 @@
 package api
 
 import (
+	"fmt"
+
+	"github.com/beevik/guid"
 	"github.com/gin-gonic/gin"
 	"github.com/ssebs/padpal-server/data"
 )
 
 /*
 GET
-	/notes?qry=
+	/notes?q=
 	/notes/:id
 	/notes/:id?version=
 	TODO: /versions/notes
@@ -24,21 +27,34 @@ DELETE
 
 // GET //
 func GETNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
-	// provider.SaveNote(data.NewNote("test1", "apiuser", "# test1"))
-	// provider.SaveNote(data.NewNote("test2", "apiuser", "# test2"))
 	return func(c *gin.Context) {
-		notes, err := provider.ListNotes("")
+		qry := c.Query("q")
+
+		notes, err := provider.ListNotes(qry)
 		if err != nil {
-			c.Error(err)
-			c.JSON(404, err)
+			errorHandler(404, err, c)
 			return
 		}
 		c.JSON(200, notes)
 	}
 }
 
-func GETNoteHandler(provider data.CRUDProvider) gin.HandlerFunc {
+func GETNoteByIDHandler(provider data.CRUDProvider) gin.HandlerFunc {
+	// Get ID from param
 	return func(c *gin.Context) {
+		// Parse id as GUID if possible
+		id, err := guid.ParseString(c.Param("id"))
+		if err != nil {
+			errorHandler(400, fmt.Errorf("invalid id given, could not convert to guid: err: %s", err), c)
+			return
+		}
+		// Then get the note from that GUID & return
+		note, err := provider.LoadNote(*id)
+		if err != nil {
+			errorHandler(404, err, c)
+			return
+		}
+		c.JSON(200, note)
 	}
 }
 
@@ -48,8 +64,7 @@ func POSTNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 		// Map post data to NoteBind, then create Note from that
 		var nb data.NoteBind
 		if err := c.ShouldBind(&nb); err != nil {
-			c.Error(err)
-			c.JSON(500, err)
+			errorHandler(400, err, c)
 			return
 		}
 		note := data.NewNoteFromBind(nb)
@@ -57,8 +72,7 @@ func POSTNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {
 		// Save the new note
 		err := provider.SaveNote(note)
 		if err != nil {
-			c.Error(err)
-			c.JSON(500, err)
+			errorHandler(500, err, c)
 			return
 		}
 		c.JSON(201, note)

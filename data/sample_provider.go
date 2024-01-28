@@ -46,10 +46,15 @@ func (p *SampleProvider) ListNotes(query string) ([]*Note, error) {
 	defer p.mutex.RUnlock()
 
 	var result []*Note
+	query = strings.ToLower(query)
 
 	// Do the query
+	// TODO: make this better
 	for _, note := range p.notes {
-		if note.Active && (query == "" || strings.Contains(note.Title, query) || strings.Contains(note.Contents, query)) {
+		if note.Active && (query == "" ||
+			strings.Contains(strings.ToLower(note.Title), query) ||
+			strings.Contains(strings.ToLower(note.Contents), query) ||
+			strings.Contains(strings.ToLower(note.Author), query)) {
 			result = append(result, note)
 		}
 	}
@@ -69,7 +74,7 @@ func (p *SampleProvider) LoadNote(id guid.Guid) (*Note, error) {
 		return note, nil
 	}
 
-	return nil, fmt.Errorf("note %s not found", id)
+	return nil, fmt.Errorf("note %s not found", id.String())
 }
 
 // ListNoteVersions lists all versions of a note by ID

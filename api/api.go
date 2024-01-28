@@ -34,6 +34,7 @@ func initHandlers(router *gin.Engine, provider data.CRUDProvider) {
 	router.GET("/", rootHandler)
 	// Notes handlers
 	router.GET("/notes", GETNotesHandler(provider))
+	router.GET("/notes/:id", GETNoteByIDHandler(provider))
 	router.POST("/notes", POSTNotesHandler(provider))
 
 }
@@ -52,4 +53,10 @@ func rootHandler(c *gin.Context) {
 	html := util.ParseMDToHTML(md)
 	c.Header("content-type", "text/html")
 	c.String(200, string(html))
+}
+
+// errorHandler will log the error and return JSON with the message
+func errorHandler(code int, err error, c *gin.Context) {
+	c.Error(err)
+	c.JSON(code, err.Error())
 }

@@ -11,8 +11,10 @@ This will explain what endpoints are available for PadPal-Server, and what they'
     - **Optional**:
       - `content`
   - `GET`
+    - **Optional**:
+      - `?q=<query>`
     - List all notes owned by userID
-- `/notes/<id>`
+- `/notes/:id`
   - **Required**:
     - JWT header to get userID
   - `GET`
@@ -43,7 +45,7 @@ This will explain what endpoints are available for PadPal-Server, and what they'
     - Create new tag
     - **Required**:
       - `tag_name`
-- `/tags/<id>`
+- `/tags/:id`
   - **Required**:
     - JWT header to get userID
   - `GET`
@@ -65,7 +67,7 @@ This will explain what endpoints are available for PadPal-Server, and what they'
       - `type`: either `SSO` or `PW`
       - `username`
       - `pass`: only if type is `PW`
-- `/users/<id>`
+- `/users/:id`
   - **Required**:
     - JWT header to get userID
   - `GET`
