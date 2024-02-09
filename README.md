@@ -17,6 +17,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 > keeping track of where I am / whats next to code / PM stuff
 
 - [x] Create REST server
+- [ ] MOVE TO /api
   - [x] GET /
     - [x] Server REST API docs
       - [x] As rendered MD
@@ -91,7 +92,7 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 - Keep versions of each note
   - Allow for rollback
   - Git?
-- 
+- Host Web client on the server
 
 
 ## Architecture
@@ -102,6 +103,9 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - sqlite to keep track? Or flat file? Make this an interface
   - Basic version control (git under hood?)
   - Unit tests for every golang file, 75% coverage minimum
+- Web client:
+  - use tailwindcss
+  - react? maybe preact
 - CLI:
   - golang CLI app
   - ./cli -login 
