@@ -75,6 +75,8 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 - Config file
 - Saves files locally
 
+![Diagram](.excalidraw.png)
+
 ## LICENSE
 [Apache License 2.0](./LICENSE)
 
