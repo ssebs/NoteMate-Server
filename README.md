@@ -10,9 +10,6 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 - [PadPal-Mobile](https://github.com/ssebs/PadPal-Mobile)
   - This is the mobile app to interact with a hosted PadPal-Server.
 
-## Usage
-> TODO: replace this section once the project is up and running
-
 ## Progress
 > keeping track of where I am / whats next to code / PM stuff
 
@@ -45,17 +42,9 @@ This repo is a part of a larger PadPal project. The following is a list of the r
     - [x] Read
     - [ ] Update
     - [ ] Delete
-  - [ ] File Provider
-- [ ] Implement Version history
-  - [ ] git?
-  - [ ] db?
-- [ ] ...
-- [ ] Auth
-- [ ] ...
+
 
 ### Docker
-> TODO: Update docs once volume mount is ready!
-
 - Install [Docker](https://www.docker.com/get-started/)/[Podman](https://podman.io/docs/installation)
 - Running DockerHub image [ssebs/padpal-server](https://hub.docker.com/r/ssebs/padpal-server):
   - `docker run -d -p 5000:5000 --rm ssebs/padpal-server`
@@ -70,81 +59,26 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - TODO
 
 ### Run from src
-- Install [go > v1.21](https://go.dev/doc/install)
-- `go get github.com/ssebs/padpal-server`
+- Install [go > v1.22](https://go.dev/doc/install)
+- `git clone https://github.com/ssebs/padpal-server`
+- `cd PadPal-Server`
 - `go run cmd/main.go`
 
-## Feature list for PadPal-Server
-### MVP
-- Save notes as files in folder structure
-- SaveProvider (allow to save files in diff places)
-  - Local path (container volume mount)
-  - Google Drive folder?
-  - S3 bucket?
-  - Under the hood, use interfaces to accomplish this
-- REST API
-  - create goroutine on each accept
-    - So if there's a 500, it will not crash everything
-  - support various errors, 404, 401, 500
-  - JWT
-  - See [REST API Doc](./REST-API.md)
-- Tag support
-- Keep versions of each note
-  - Allow for rollback
-  - Git?
-- Host Web client on the server
-
-
-## Architecture
-- Server:
-  - golang REST API to manage notes
-  - dockerized
-  - mounted volume, save latest file + diffs in folder
-  - sqlite to keep track? Or flat file? Make this an interface
-  - Basic version control (git under hood?)
-  - Unit tests for every golang file, 75% coverage minimum
-- Web client:
-  - use tailwindcss
-  - react? maybe preact
-- CLI:
-  - golang CLI app
-  - ./cli -login 
-    - Opens a browser & SSO happens
-    - Or, no auth to start
-  - Sync a directory (workspace?)
-    - Merge conflict? Use the server version & save local as .fix-me for now
-  - For use with VSCode/vim/text editor of your choosing (MD Text only)
-- UI:
-  - Flutter mobile app
-    - Similar to google keep, if they have a MD text editor lib
-    - Android home screen widget to view / open / create new notes like keeps'
-    - WYSIWYG or MD Text (with helpers)
-    - Exports for Android + Web + iOS?
-    - If flutter doesn't have a good MD WYSIWYG editor
-    - JS lib for editing, material-ui for viewing what files you have, etc.
-    - SSO?
-    - WYSIWYG or MD Text (with helpers)
-    - Save / load files from disk
-- How it will work:
-- POST /notes with contents + author + metadata
-- Server will save file, record version with now() in DB
-- 201 response
-- UI's will sync periodically, using same logic as CLI sync
-  - GET /note/latest?version
-    - Only get the version information! 
-    - If it's the latest, do nothing
-    - If not, GET /note/latest
-      - Get contents + metadata
-  - Pushing local changes, PUT /note/<id>
-    - Server will add new version to VC, reply 201
-- Wish:
-  - Google SSO login?
-  - Merge conflict UI
-  - Collaboration
+## Arch
+- Padpal sync server 
+- Sync method:
+  - Last-write wins
+  - Metadata to list files and latest timestamp
+  - HTTP to send/recv files
+  - Websockets to listen for updates? or service worker? or http polling?
+- Host web editor on the server
+- Config file
+- Saves files locally
 
 ## LICENSE
 [Apache License 2.0](./LICENSE)
 
-## External references / docs
+## Docs
 - https://pkg.go.dev/github.com/golang-jwt/jwt#example-package-GetTokenViaHTTP
 - UNRAID https://selfhosters.net/docker/templating/templating/#114-shave-off-the-xml
+- https://stackoverflow.com/questions/12555043/my-understanding-of-http-polling-long-polling-http-streaming-and-websockets
