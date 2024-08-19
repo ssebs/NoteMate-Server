@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/beevik/guid"
 )
@@ -77,16 +76,6 @@ func (p *SampleProvider) LoadNote(id guid.Guid) (*Note, error) {
 	return nil, fmt.Errorf("note %s not found", id.String())
 }
 
-// ListNoteVersions lists all versions of a note by ID
-func (p *SampleProvider) ListNoteVersions(id guid.Guid) ([]int, error) {
-	return nil, errors.New("method not implemented")
-}
-
-// LoadNoteVersion loads a specific version of a note by ID and version number
-func (p *SampleProvider) LoadNoteVersion(id guid.Guid, version int) (*Note, error) {
-	return nil, errors.New("method not implemented")
-}
-
 // UpdateNote updates a note in the in-memory provider
 func (p *SampleProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 	p.mutex.Lock()
@@ -106,11 +95,6 @@ func (p *SampleProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 	return nil
 }
 
-// RestoreNote restores a Note to a specific version, append version #
-func (p *SampleProvider) RestoreNote(id guid.Guid, version int) (*Note, error) {
-	return nil, errors.New("method not implemented")
-}
-
 // DeleteNote deletes a note (archives it) by ID
 func (p *SampleProvider) DeleteNote(id guid.Guid) error {
 	p.mutex.Lock()
@@ -124,20 +108,4 @@ func (p *SampleProvider) DeleteNote(id guid.Guid) error {
 	// Mark the note as inactive
 	p.notes[id].Active = false
 	return nil
-}
-
-// OLD
-// GetSampleNotes will return sample notes
-func GetSampleNotes() []Note {
-	_now := time.Now().UTC()
-	notes := []Note{
-		{Title: "firstTitle", Contents: "# First Note!\nTest\n- Foo\n- Bar", Author: "Seb",
-			LastUpdated: _now, Version: 1, Active: true, ID: guid.New()},
-		{Title: "secondTitle", Contents: "# Second Note!\nTest\n- one\n- two", Author: "Seb",
-			LastUpdated: _now, Version: 1, Active: true, ID: guid.New()},
-		{Title: "thirdTitle", Contents: "# Third Note!\nTest\n- Nest\n\t- it", Author: "Seb",
-			LastUpdated: _now, Version: 1, Active: true, ID: guid.New()},
-	}
-
-	return notes
 }

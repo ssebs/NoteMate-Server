@@ -9,19 +9,28 @@ import (
 	"github.com/ssebs/padpal-server/util"
 )
 
-// DoEverything takes a hostPort (e.x. 0.0.0.0:8080)
-func DoEverything(hostPort string) error {
-	// TODO: replace_me with an env var or CLI flag
-	provider := data.NewFileProvider()
+type API struct {
+	hostPort string
+	provider data.CRUDProvider
+	router   *gin.Engine
+}
 
-	router := gin.Default()
-	router.GET("/", rootHandler)
-	router.GET("/notes", GETNotesHandler(provider))
-	router.GET("/notes/:id", GETNoteByIDHandler(provider))
-	router.POST("/notes", POSTNotesHandler(provider))
+func NewAPI(hostPort, dirName string) *API {
+	a := &API{
+		hostPort: hostPort,
+		provider: data.NewFileProvider(dirName),
+		router:   gin.Default(),
+	}
+	a.router.GET("/", rootHandler)
 
-	// Run the server
-	return router.Run(hostPort)
+	a.router.GET("/notes", GETNotesHandler(a.provider))
+	a.router.GET("/notes/:id", GETNoteByIDHandler(a.provider))
+	a.router.POST("/notes", POSTNotesHandler(a.provider))
+
+	return a
+}
+func (a *API) RunAPI() error {
+	return a.router.Run(a.hostPort)
 }
 
 // rootHandler renders the REST-API.md file as HTML for /

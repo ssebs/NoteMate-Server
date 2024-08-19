@@ -16,7 +16,7 @@ type FileProvider struct {
 	mutex sync.RWMutex
 }
 
-func NewFileProvider() *FileProvider {
+func NewFileProvider(dirName string) *FileProvider {
 	return &FileProvider{
 		notes: make(map[guid.Guid]*Note),
 	}

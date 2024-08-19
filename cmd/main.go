@@ -10,5 +10,6 @@ import (
 
 func main() {
 	fmt.Println("PadPal Server")
-	log.Fatal(api.DoEverything("0.0.0.0:5000"))
+	a := api.NewAPI("0.0.0.0:5000", "./tmp/")
+	log.Fatal(a.RunAPI())
 }
