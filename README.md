@@ -13,31 +13,13 @@ This repo is a part of a larger PadPal project. The following is a list of the r
 ## Progress
 > keeping track of where I am / whats next to code / PM stuff
 
-- [x] Create REST server
-- [ ] MOVE TO /api
-  - [x] GET /
-    - [x] Server REST API docs
-      - [x] As rendered MD
-  - [x] 404 / 500 error support
-    - [x] Don't crash the server on 500
-- [x] Deployable via Docker
-- Design Data Models
-  - [x] Notes
-  - [ ] Tags
-  - [ ] Users + Auth
-- [x] Create CRUDProviders interface to support:
-    - [x] Create
-    - [x] Read
-      - [x] List all notes
-      - [x] Details for 1 note
-      - [x] List versions for 1 note
-      - [x] Details for version # of note
-    - [x] Update
-      - [x] Update to...
-      - [x] Restore from version
-    - [x] Delete
 - [ ] Save / Load data files
-  - [ ] Test/Sample Provider
+  - [ ] FileProvider
+    - [ ] Create
+    - [ ] Read
+    - [ ] Update
+    - [ ] Delete
+  - [x] Test/Sample Provider
     - [x] Create
     - [x] Read
     - [ ] Update
