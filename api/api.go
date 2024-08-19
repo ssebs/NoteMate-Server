@@ -2,8 +2,6 @@
 package api
 
 import (
-	"fmt"
-	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -11,32 +9,19 @@ import (
 	"github.com/ssebs/padpal-server/util"
 )
 
-// HandleAndServe will handle the routes and serve HTTP
-// contains a list of route handlers
-func HandleAndServe(host string, port int) {
-	hostPort := fmt.Sprintf("%s:%d", host, port)
-
+// DoEverything takes a hostPort (e.x. 0.0.0.0:8080)
+func DoEverything(hostPort string) error {
 	// TODO: replace_me with an env var or CLI flag
-	provider := data.NewSampleProvider()
+	provider := data.NewFileProvider()
 
-	// init gin + HTTP handlers
 	router := gin.Default()
-	initHandlers(router, provider)
-
-	// Run the server
-	log.Fatal(router.Run(hostPort))
-}
-
-// initHandlers is where to define new HTTP handlers
-// requires the current router, and a CRUDProvider
-func initHandlers(router *gin.Engine, provider data.CRUDProvider) {
-	// Default handler
 	router.GET("/", rootHandler)
-	// Notes handlers
 	router.GET("/notes", GETNotesHandler(provider))
 	router.GET("/notes/:id", GETNoteByIDHandler(provider))
 	router.POST("/notes", POSTNotesHandler(provider))
 
+	// Run the server
+	return router.Run(hostPort)
 }
 
 // rootHandler renders the REST-API.md file as HTML for /

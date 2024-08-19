@@ -9,22 +9,6 @@ import (
 	"github.com/ssebs/padpal-server/data"
 )
 
-/*
-GET
-x	/notes?q=
-x	/notes/:id
-	/notes/:id?version=
-	TODO: /versions/notes
-POST
-x	/notes
-PUT
-	/notes/:id
-	/notes/:id?version=
-DELETE
-	/notes/:id
-	TODO: /notes/:id?version=
-*/
-
 // GET //
 // GETNotesHandler uses a CRUDProvider and handles GET /notes?q=
 func GETNotesHandler(provider data.CRUDProvider) gin.HandlerFunc {

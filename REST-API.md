@@ -18,8 +18,5 @@ This will explain what endpoints are available for PadPal-Server, and what they'
   - `params: (?key=val)`
     - `q`: (filter query)
       - Filter results, supports * wildcard
-
-## TBD
-
 - **DELETE** `/notes/:id`
   - Delete note
