@@ -71,14 +71,6 @@ func (p *FileProvider) LoadNote(id guid.Guid) (*Note, error) {
 	return nil, fmt.Errorf("note %s not found", id.String())
 }
 
-func (p *FileProvider) ListNoteVersions(id guid.Guid) ([]int, error) {
-	return nil, errors.New("method not implemented")
-}
-
-func (p *FileProvider) LoadNoteVersion(id guid.Guid, version int) (*Note, error) {
-	return nil, errors.New("method not implemented")
-}
-
 func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
@@ -95,10 +87,6 @@ func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 	// Update the note
 	p.notes[id] = updatedNote
 	return nil
-}
-
-func (p *FileProvider) RestoreNote(id guid.Guid, version int) (*Note, error) {
-	return nil, errors.New("method not implemented")
 }
 
 func (p *FileProvider) DeleteNote(id guid.Guid) error {
