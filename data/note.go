@@ -25,8 +25,6 @@ type Note struct {
 	Contents    string     `json:"contents"`
 	Author      string     `json:"author"`
 	LastUpdated time.Time  `json:"last_updated"`
-	Version     int        `json:"version"`
-	Active      bool       `json:"active"`
 }
 
 // NewNote will create a new note from the title, author, and contents.
@@ -40,8 +38,6 @@ func NewNote(title, author, contents string) *Note {
 		Contents:    contents,
 		Author:      author,
 		LastUpdated: time.Now().UTC(),
-		Version:     1,
-		Active:      true,
 	}
 }
 

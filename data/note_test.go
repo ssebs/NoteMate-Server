@@ -31,12 +31,6 @@ func TestNewNote(t *testing.T) {
 	if note.LastUpdated.IsZero() {
 		t.Error("expected non-zero LastUpdated time, got zero time")
 	}
-	if note.Version != 1 {
-		t.Errorf("expected version 1, got %d", note.Version)
-	}
-	if !note.Active {
-		t.Error("expected Active to be true, got false")
-	}
 }
 
 func TestMarshalJSON(t *testing.T) {
@@ -52,8 +46,6 @@ func TestMarshalJSON(t *testing.T) {
 		Contents:    _contents,
 		Author:      _author,
 		LastUpdated: _lastUpdated,
-		Version:     1,
-		Active:      true,
 	}
 
 	expectedJSON := `{"id":"123e4567-e89b-12d3-a456-426614174001","title":"Test Title","contents":"Test Contents","author":"Test Author","last_updated":"2024-01-27T12:00:00Z","version":1,"active":true}`

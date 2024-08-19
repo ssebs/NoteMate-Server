@@ -2,8 +2,10 @@
 package api
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/beevik/guid"
 	"github.com/gin-gonic/gin"
 	"github.com/ssebs/padpal-server/data"
 	"github.com/ssebs/padpal-server/util"
@@ -23,15 +25,87 @@ func NewAPI(hostPort, dirName string) *API {
 	}
 	a.router.GET("/", rootHandler)
 
-	a.router.GET("/notes", GETNotesHandler(a.provider))
-	a.router.GET("/notes/:id", GETNoteByIDHandler(a.provider))
-	a.router.POST("/notes", POSTNotesHandler(a.provider))
+	a.router.POST("/notes", a.CreateNoteHandler())
+	a.router.GET("/notes", a.GetNotesHandler())
+	a.router.GET("/notes/:id", a.GetNoteByIDHandler())
+	a.router.PUT("/notes/:id", a.UpdateNoteHandler())
+	a.router.DELETE("/notes/:id", a.DeleteNoteHandler())
 
 	return a
 }
+
 func (a *API) RunAPI() error {
 	return a.router.Run(a.hostPort)
 }
+
+func (a *API) CreateNoteHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Map post data to NoteBind, then create Note from that
+		var nb data.NoteBind
+		if err := c.ShouldBind(&nb); err != nil {
+			errorHandler(400, err, c)
+			return
+		}
+		note := data.NewNoteFromBind(nb)
+
+		// Save the new note
+		err := a.provider.SaveNote(note)
+		if err != nil {
+			errorHandler(500, err, c)
+			return
+		}
+		c.JSON(201, note)
+	}
+}
+
+func (a *API) GetNotesHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		qry := c.Query("q")
+
+		notes, err := a.provider.ListNotes(qry)
+		if err != nil {
+			errorHandler(404, err, c)
+			return
+		}
+		c.JSON(200, notes)
+	}
+}
+
+func (a *API) GetNoteByIDHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Parse id as GUID if possible
+		id, err := guid.ParseString(c.Param("id"))
+		if err != nil {
+			errorHandler(400, fmt.Errorf("invalid id given, could not convert to guid: err: %s", err), c)
+			return
+		}
+		// Then get the note from that GUID & return
+		note, err := a.provider.LoadNote(*id)
+		if err != nil {
+			errorHandler(404, err, c)
+			return
+		}
+		c.JSON(200, note)
+	}
+}
+
+func (a *API) UpdateNoteHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	}
+}
+
+func (a *API) DeleteNoteHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	}
+}
+
+// func (a *API) Handler() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		c.JSON(200, gin.H{"status": "ok"})
+// 	}
+// }
 
 // rootHandler renders the REST-API.md file as HTML for /
 func rootHandler(c *gin.Context) {

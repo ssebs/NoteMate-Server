@@ -46,13 +46,14 @@ func (p *FileProvider) ListNotes(query string) ([]*Note, error) {
 	// Do the query
 	// TODO: make this better
 	for _, note := range p.notes {
-		if note.Active && (query == "" ||
+		if query == "" ||
 			strings.Contains(strings.ToLower(note.Title), query) ||
 			strings.Contains(strings.ToLower(note.Contents), query) ||
-			strings.Contains(strings.ToLower(note.Author), query)) {
+			strings.Contains(strings.ToLower(note.Author), query) {
 			result = append(result, note)
 		}
 	}
+	// TODO: candidate for unit test..
 	if len(result) == 0 {
 		return result, fmt.Errorf("could not find any notes from the query: %s", query)
 	}
@@ -80,10 +81,6 @@ func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 		return fmt.Errorf("note %s not found", id)
 	}
 
-	if p.notes[id].Version <= updatedNote.Version {
-		updatedNote.Version += 1
-	}
-
 	// Update the note
 	p.notes[id] = updatedNote
 	return nil
@@ -99,6 +96,5 @@ func (p *FileProvider) DeleteNote(id guid.Guid) error {
 	}
 
 	// Mark the note as inactive
-	p.notes[id].Active = false
 	return nil
 }

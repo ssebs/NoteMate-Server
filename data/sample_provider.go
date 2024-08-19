@@ -50,10 +50,10 @@ func (p *SampleProvider) ListNotes(query string) ([]*Note, error) {
 	// Do the query
 	// TODO: make this better
 	for _, note := range p.notes {
-		if note.Active && (query == "" ||
+		if query == "" ||
 			strings.Contains(strings.ToLower(note.Title), query) ||
 			strings.Contains(strings.ToLower(note.Contents), query) ||
-			strings.Contains(strings.ToLower(note.Author), query)) {
+			strings.Contains(strings.ToLower(note.Author), query) {
 			result = append(result, note)
 		}
 	}
@@ -86,10 +86,6 @@ func (p *SampleProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 		return fmt.Errorf("note %s not found", id)
 	}
 
-	if p.notes[id].Version <= updatedNote.Version {
-		updatedNote.Version += 1
-	}
-
 	// Update the note
 	p.notes[id] = updatedNote
 	return nil
@@ -105,7 +101,5 @@ func (p *SampleProvider) DeleteNote(id guid.Guid) error {
 		return fmt.Errorf("note %s not found", id)
 	}
 
-	// Mark the note as inactive
-	p.notes[id].Active = false
 	return nil
 }
