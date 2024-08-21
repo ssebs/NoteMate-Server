@@ -54,7 +54,7 @@ func (a *API) createNoteHandler() gin.HandlerFunc {
 			errorHandler(500, err, c)
 			return
 		}
-		c.JSON(201, note)
+		c.JSON(201, gin.H{"status": "Note Created", "note": note})
 	}
 }
 
@@ -126,5 +126,5 @@ func rootHandler(c *gin.Context) {
 // errorHandler will log the error and return JSON with the message
 func errorHandler(code int, err error, c *gin.Context) {
 	c.Error(err)
-	c.JSON(code, err.Error())
+	c.JSON(code, gin.H{"status": "Error", "message": err.Error()})
 }

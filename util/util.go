@@ -2,12 +2,22 @@
 package util
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
 )
+
+// ValidateNoteContents
+func ValidateNoteContents(contents string) error {
+	if strings.Contains(contents, "baddata") {
+		return fmt.Errorf("baddata in note contents")
+	}
+	return nil
+}
 
 // ParseMDToHTML
 // Uses simplecss.org CSS

@@ -2,16 +2,19 @@
 package data
 
 import (
-	"errors"
 	"fmt"
+	"os"
+	"path"
 	"strings"
 	"sync"
 
 	"github.com/beevik/guid"
+	"github.com/ssebs/padpal-server/util"
 )
 
 /*
 Init:
+- Load metadata from file/db
 - Load local files
 - Add metadata to state
 
@@ -20,6 +23,7 @@ Save note:
 - Save file locally
 - Create metadata in state
 - <notify clients of new file>
+- Sync metadata to file/db
 
 Update note:
 - Is metadata found
@@ -29,6 +33,7 @@ Update note:
   - Save file locally
   - Update metadata in state
   - <notify clients of updated file>
+  - Sync metadata to file/db
 
 Get note by id:
 - Meta param?
@@ -44,28 +49,54 @@ Get notes (query):
 
 // FileProvider implements CRUDProvider
 type FileProvider struct {
-	notes map[guid.Guid]*Note
-	mutex sync.RWMutex
+	notes   map[guid.Guid]*Note
+	mutex   sync.RWMutex
+	dirName string
 }
 
 func NewFileProvider(dirName string) *FileProvider {
 	return &FileProvider{
-		notes: make(map[guid.Guid]*Note),
+		notes:   make(map[guid.Guid]*Note),
+		dirName: path.Clean(dirName),
 	}
+	// Load local files
 }
 
 func (p *FileProvider) SaveNote(note *Note) error {
+	/*
+		- Validate
+		- Save file locally
+		- Create metadata in state
+		- <notify clients of new file>
+	*/
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
+	// Validate
+	if err := util.ValidateNoteContents(note.Contents); err != nil {
+		return fmt.Errorf("could not validate note contents, %e", err)
+	}
+
 	// Check if a note with the same ID already exists
 	if _, exists := p.notes[*note.ID]; exists {
-		return errors.New("note with the same ID already exists")
+		return fmt.Errorf("note with the same ID already exists, id: %s", note.ID)
 	}
-	// Save the note to the map
-	p.notes[*note.ID] = note
 
 	// Save file
+	fn := fmt.Sprintf("./%s/%s.md", p.dirName, note.ID)
+	if err := os.WriteFile(fn, []byte(note.Contents), 0644); err != nil {
+		print(err)
+		if e, ok := err.(*os.PathError); ok {
+			return fmt.Errorf("have you created the ./%s dir? err: %s", p.dirName, e)
+		}
+
+		return fmt.Errorf("error writing file: %s", err.Error())
+	}
+
+	// Create metadata in state
+	p.notes[*note.ID] = note
+
+	// TODO: notify all clients
 
 	return nil
 }
