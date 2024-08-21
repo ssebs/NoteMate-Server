@@ -20,3 +20,6 @@ This will explain what endpoints are available for PadPal-Server, and what they'
       - Filter results, supports * wildcard
 - **DELETE** `/notes/:id`
   - Delete note
+
+TBD:
+`/auth`

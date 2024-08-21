@@ -10,6 +10,38 @@ import (
 	"github.com/beevik/guid"
 )
 
+/*
+Init:
+- Load local files
+- Add metadata to state
+
+Save note:
+- Validate
+- Save file locally
+- Create metadata in state
+- <notify clients of new file>
+
+Update note:
+- Is metadata found
+- No: Save note
+- Yes:
+  - Validate
+  - Save file locally
+  - Update metadata in state
+  - <notify clients of updated file>
+
+Get note by id:
+- Meta param?
+- Yes: send metadata
+- No:
+  - Upload/send local file
+
+Get notes (query):
+- Query / filter metadata
+- Send metadata
+
+*/
+
 // FileProvider implements CRUDProvider
 type FileProvider struct {
 	notes map[guid.Guid]*Note
@@ -30,9 +62,11 @@ func (p *FileProvider) SaveNote(note *Note) error {
 	if _, exists := p.notes[*note.ID]; exists {
 		return errors.New("note with the same ID already exists")
 	}
-
 	// Save the note to the map
 	p.notes[*note.ID] = note
+
+	// Save file
+
 	return nil
 }
 

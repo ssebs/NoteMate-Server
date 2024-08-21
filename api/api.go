@@ -25,11 +25,11 @@ func NewAPI(hostPort, dirName string) *API {
 	}
 	a.router.GET("/", rootHandler)
 
-	a.router.POST("/notes", a.CreateNoteHandler())
-	a.router.GET("/notes", a.GetNotesHandler())
-	a.router.GET("/notes/:id", a.GetNoteByIDHandler())
-	a.router.PUT("/notes/:id", a.UpdateNoteHandler())
-	a.router.DELETE("/notes/:id", a.DeleteNoteHandler())
+	a.router.POST("/notes", a.createNoteHandler())
+	a.router.GET("/notes", a.getNotesHandler())
+	a.router.GET("/notes/:id", a.getNoteByIDHandler())
+	a.router.PUT("/notes/:id", a.updateNoteHandler())
+	a.router.DELETE("/notes/:id", a.deleteNoteHandler())
 
 	return a
 }
@@ -38,7 +38,7 @@ func (a *API) RunAPI() error {
 	return a.router.Run(a.hostPort)
 }
 
-func (a *API) CreateNoteHandler() gin.HandlerFunc {
+func (a *API) createNoteHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Map post data to NoteBind, then create Note from that
 		var nb data.NoteBind
@@ -58,7 +58,7 @@ func (a *API) CreateNoteHandler() gin.HandlerFunc {
 	}
 }
 
-func (a *API) GetNotesHandler() gin.HandlerFunc {
+func (a *API) getNotesHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		qry := c.Query("q")
 
@@ -71,7 +71,7 @@ func (a *API) GetNotesHandler() gin.HandlerFunc {
 	}
 }
 
-func (a *API) GetNoteByIDHandler() gin.HandlerFunc {
+func (a *API) getNoteByIDHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Parse id as GUID if possible
 		id, err := guid.ParseString(c.Param("id"))
@@ -89,13 +89,13 @@ func (a *API) GetNoteByIDHandler() gin.HandlerFunc {
 	}
 }
 
-func (a *API) UpdateNoteHandler() gin.HandlerFunc {
+func (a *API) updateNoteHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	}
 }
 
-func (a *API) DeleteNoteHandler() gin.HandlerFunc {
+func (a *API) deleteNoteHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	}
