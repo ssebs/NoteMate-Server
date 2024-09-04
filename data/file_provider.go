@@ -4,10 +4,15 @@ package data
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+  "bufio"
 	"os"
+	"io"
+	"os/user"
 	"path"
 	"strings"
 	"sync"
+	"syscall"
 
 	"github.com/beevik/guid"
 	"github.com/ssebs/padpal-server/util"
@@ -63,16 +68,62 @@ func NewFileProvider(dirName, jsonConfigFullPath string) *FileProvider {
 		configPath: jsonConfigFullPath,
 	}
 	// Load metadata from file
-	fp.loadMetadata()
+	if err := fp.loadMetadata(); err != nil {
+		// TODO: log warn
+		fmt.Println(err)
+	}
 	// List local files
+	// oslistdir => for each => cmp guid to metadata map => generate meta from os stat if not found => add
+
+	files, err := os.ReadDir(fp.dirName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		info, _ := file.Info()
+    fmt.Println("filename:", info.Name())
+    fmt.Println("updated at:", info.ModTime())
+
+    uid := info.Sys().(*syscall.Stat_t).Uid
+    usr,err:= user.LookupId(fmt.Sprintf("%d",uid))
+    if err != nil  {
+      log.Fatal(err)
+    }
+
+    fmt.Println("owner:", usr.Username)
+    
+    // Set title to first line in file
+    f, err := os.Open(path.Join(fp.dirName, file.Name()))
+    if err != nil{
+      log.Fatal(err)
+    }
+    defer f.Close()
+    
+    reader := bufio.NewReader(f)
+    for {
+    title, err := reader.ReadString('\n')
+    if err != nil{
+         if err == io.EOF {
+                break
+            }
+      log.Fatal(err)
+    }
+    fmt.Println("title:", title)
+    break
+  }
+	}
 
 	// Compare metadata list to local files list
 
 	// Update metadata if needed
 
-	// Load local files with LoadNote()
-
 	return fp
+}
+
+func (p *FileProvider) localFileCheck() error {
+
+	return nil
 }
 
 func (p *FileProvider) loadMetadata() error {
