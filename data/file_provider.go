@@ -5,14 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-  "bufio"
 	"os"
-	"io"
-	"os/user"
 	"path"
 	"strings"
 	"sync"
-	"syscall"
 
 	"github.com/beevik/guid"
 	"github.com/ssebs/padpal-server/util"
@@ -79,44 +75,29 @@ func NewFileProvider(dirName, jsonConfigFullPath string) *FileProvider {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	for _, file := range files {
 		info, _ := file.Info()
-    fmt.Println("filename:", info.Name())
-    fmt.Println("updated at:", info.ModTime())
+		// Check if guid from filename is in notes map, if not then generate skel meta and save
+		fmt.Println("filename:", info.Name())
+		fmt.Println("updated at:", info.ModTime())
+		g, _ := strings.CutSuffix(file.Name(), ".md")
+		fmt.Println("guid:", g)
 
-    uid := info.Sys().(*syscall.Stat_t).Uid
-    usr,err:= user.LookupId(fmt.Sprintf("%d",uid))
-    if err != nil  {
-      log.Fatal(err)
-    }
+		if _, exists := fp.notes[g]; !exists {
+			gd, _ := guid.ParseString(g)
+			// Add to medatada and save
+			fp.notes[g] = &Note{
+				ID:          gd,
+				Title:       "",
+				Contents:    "todo: load contents",
+				Author:      "",
+				LastUpdated: info.ModTime().UTC(),
+			}
+			fp.saveMetadata()
+		}
 
-    fmt.Println("owner:", usr.Username)
-    
-    // Set title to first line in file
-    f, err := os.Open(path.Join(fp.dirName, file.Name()))
-    if err != nil{
-      log.Fatal(err)
-    }
-    defer f.Close()
-    
-    reader := bufio.NewReader(f)
-    for {
-    title, err := reader.ReadString('\n')
-    if err != nil{
-         if err == io.EOF {
-                break
-            }
-      log.Fatal(err)
-    }
-    fmt.Println("title:", title)
-    break
-  }
+		// Update metadata if needed
 	}
-
-	// Compare metadata list to local files list
-
-	// Update metadata if needed
 
 	return fp
 }
