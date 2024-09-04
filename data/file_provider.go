@@ -50,7 +50,7 @@ Get notes (query):
 
 // FileProvider implements CRUDProvider
 type FileProvider struct {
-	notes      map[guid.Guid]*Note
+	notes      map[string]*Note // guid string
 	mutex      sync.RWMutex
 	dirName    string
 	configPath string
@@ -58,7 +58,7 @@ type FileProvider struct {
 
 func NewFileProvider(dirName, jsonConfigFullPath string) *FileProvider {
 	fp := &FileProvider{
-		notes:      make(map[guid.Guid]*Note),
+		notes:      make(map[string]*Note),
 		dirName:    path.Clean(dirName),
 		configPath: jsonConfigFullPath,
 	}
@@ -110,7 +110,7 @@ func (p *FileProvider) SaveNote(note *Note) error {
 	}
 
 	// Check if a note with the same ID already exists
-	if _, exists := p.notes[*note.ID]; exists {
+	if p.checkNoteFound(note.ID.String()) {
 		return fmt.Errorf("note with the same ID already exists, id: %s", note.ID)
 	}
 
@@ -125,7 +125,7 @@ func (p *FileProvider) SaveNote(note *Note) error {
 	}
 
 	// Create metadata in state
-	p.notes[*note.ID] = note
+	p.notes[note.ID.String()] = note
 	if err := p.saveMetadata(); err != nil {
 		// TODO: logger warn
 		fmt.Println(err)
@@ -166,7 +166,7 @@ func (p *FileProvider) LoadNote(id guid.Guid) (*Note, error) {
 	defer p.mutex.RUnlock()
 
 	// Find the note by ID
-	if note, exists := p.notes[id]; exists {
+	if note, exists := p.notes[id.String()]; exists {
 		return note, nil
 	}
 
@@ -178,12 +178,12 @@ func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 	defer p.mutex.Unlock()
 
 	// Check if the note exists
-	if _, exists := p.notes[id]; !exists {
+	if !p.checkNoteFound(id.String()) {
 		return fmt.Errorf("note %s not found", id)
 	}
 
 	// Update the note
-	p.notes[id] = updatedNote
+	p.notes[id.String()] = updatedNote
 	return nil
 }
 
@@ -192,10 +192,17 @@ func (p *FileProvider) DeleteNote(id guid.Guid) error {
 	defer p.mutex.Unlock()
 
 	// Check if the note exists
-	if _, exists := p.notes[id]; !exists {
+	if !p.checkNoteFound(id.String()) {
 		return fmt.Errorf("note %s not found", id)
 	}
 
 	// Mark the note as inactive
 	return nil
+}
+
+func (p *FileProvider) checkNoteFound(id string) bool {
+	if _, exists := p.notes[id]; !exists {
+		return false
+	}
+	return true
 }
