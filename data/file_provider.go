@@ -2,6 +2,7 @@
 package data
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path"
@@ -49,17 +50,48 @@ Get notes (query):
 
 // FileProvider implements CRUDProvider
 type FileProvider struct {
-	notes   map[guid.Guid]*Note
-	mutex   sync.RWMutex
-	dirName string
+	notes      map[guid.Guid]*Note
+	mutex      sync.RWMutex
+	dirName    string
+	configPath string
 }
 
-func NewFileProvider(dirName string) *FileProvider {
-	return &FileProvider{
-		notes:   make(map[guid.Guid]*Note),
-		dirName: path.Clean(dirName),
+func NewFileProvider(dirName, jsonConfigFullPath string) *FileProvider {
+	fp := &FileProvider{
+		notes:      make(map[guid.Guid]*Note),
+		dirName:    path.Clean(dirName),
+		configPath: jsonConfigFullPath,
 	}
-	// Load local files
+	// Load metadata from file
+
+	// List local files
+
+	// Compare metadata list to local files list
+
+	// Update metadata if needed
+
+	// Load local files with LoadNote()
+
+	return fp
+}
+
+func (p *FileProvider) loadMetadata() error {
+	return nil
+}
+
+func (p *FileProvider) saveMetadata() error {
+	// Save notes as json to file
+	file, err := os.Create(p.configPath)
+	if err != nil {
+		return fmt.Errorf("could not create file %s", err)
+	}
+
+	jsonData, err := json.Marshal(p.notes)
+	if err != nil {
+		return fmt.Errorf("could not marshall notes into json file %s", err)
+	}
+	_, err = file.Write(jsonData)
+	return err
 }
 
 func (p *FileProvider) SaveNote(note *Note) error {
@@ -94,6 +126,11 @@ func (p *FileProvider) SaveNote(note *Note) error {
 
 	// Create metadata in state
 	p.notes[*note.ID] = note
+	if err := p.saveMetadata(); err != nil {
+		// TODO: logger warn
+		fmt.Println(err)
+		return err
+	}
 
 	// TODO: notify all clients
 

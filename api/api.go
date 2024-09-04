@@ -4,6 +4,7 @@ package api
 import (
 	"fmt"
 	"os"
+	"path"
 
 	"github.com/beevik/guid"
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,7 @@ type API struct {
 func NewAPI(hostPort, dirName string) *API {
 	a := &API{
 		hostPort: hostPort,
-		provider: data.NewFileProvider(dirName),
+		provider: data.NewFileProvider(path.Clean(dirName), path.Join(dirName, "meta.json")),
 		router:   gin.Default(),
 	}
 	a.router.GET("/", rootHandler)
