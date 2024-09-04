@@ -16,6 +16,8 @@ type NoteBind struct {
 	Author   string `json:"author"`
 }
 
+// TODO: Create NoteMeta for file_provider
+
 // Note
 // ID is a GUID
 // LastUpdated is a time.Time in UTC
@@ -58,4 +60,29 @@ func (n *Note) MarshalJSON() ([]byte, error) {
 		ID:    n.ID.String(),
 		Alias: (*Alias)(n),
 	})
+}
+
+// UnmarshalJSON customizes the JSON unmarshaling for the Note struct.
+// The ID field is parsed from a string in the JSON input.
+func (n *Note) UnmarshalJSON(data []byte) error {
+	type Alias Note
+	aux := &struct {
+		ID string `json:"id"`
+		*Alias
+	}{
+		Alias: (*Alias)(n),
+	}
+
+	if err := json.Unmarshal(data, aux); err != nil {
+		return err
+	}
+
+	// Parse the ID string into a *guid.Guid
+	parsedID, err := guid.ParseString(aux.ID)
+	if err != nil {
+		return err
+	}
+
+	n.ID = parsedID
+	return nil
 }

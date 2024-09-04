@@ -50,7 +50,7 @@ Get notes (query):
 
 // FileProvider implements CRUDProvider
 type FileProvider struct {
-	notes      map[string]*Note // guid string
+	notes      map[string]*Note // guid string: Note ptr
 	mutex      sync.RWMutex
 	dirName    string
 	configPath string
@@ -63,7 +63,7 @@ func NewFileProvider(dirName, jsonConfigFullPath string) *FileProvider {
 		configPath: jsonConfigFullPath,
 	}
 	// Load metadata from file
-
+	fp.loadMetadata()
 	// List local files
 
 	// Compare metadata list to local files list
@@ -76,6 +76,18 @@ func NewFileProvider(dirName, jsonConfigFullPath string) *FileProvider {
 }
 
 func (p *FileProvider) loadMetadata() error {
+	// Load metadata from file
+	fileContents, err := os.ReadFile(p.configPath)
+	if err != nil {
+		return nil
+	}
+	tmpNotes := make(map[string]*Note)
+
+	err = json.Unmarshal(fileContents, &tmpNotes)
+	if err != nil {
+		return fmt.Errorf("could not load metadata, %s", err)
+	}
+	p.notes = tmpNotes
 	return nil
 }
 
@@ -85,6 +97,7 @@ func (p *FileProvider) saveMetadata() error {
 	if err != nil {
 		return fmt.Errorf("could not create file %s", err)
 	}
+	defer file.Close()
 
 	jsonData, err := json.Marshal(p.notes)
 	if err != nil {
@@ -166,6 +179,7 @@ func (p *FileProvider) LoadNote(id guid.Guid) (*Note, error) {
 	defer p.mutex.RUnlock()
 
 	// Find the note by ID
+	// TODO: load from file
 	if note, exists := p.notes[id.String()]; exists {
 		return note, nil
 	}
@@ -184,6 +198,10 @@ func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 
 	// Update the note
 	p.notes[id.String()] = updatedNote
+
+	// Write update to file
+
+	p.saveMetadata()
 	return nil
 }
 
