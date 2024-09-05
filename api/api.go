@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"time"
 
 	"github.com/beevik/guid"
 	"github.com/gin-gonic/gin"
@@ -92,7 +93,29 @@ func (a *API) getNoteByIDHandler() gin.HandlerFunc {
 
 func (a *API) updateNoteHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "ok"})
+		id, err := guid.ParseString(c.Param("id"))
+		if err != nil {
+			errorHandler(400, fmt.Errorf("invalid id given, could not convert to guid: err: %s", err), c)
+			return
+		}
+
+		// Map post data to NoteBind, then create Note from that
+		var note data.Note
+		if err := c.ShouldBind(&note); err != nil {
+			errorHandler(400, fmt.Errorf("failed to bind note, %s", err), c)
+			return
+		}
+
+		// Update the note
+		note.ID = id
+		note.LastUpdated = time.Now().UTC()
+
+		if err := a.provider.UpdateNote(*id, &note); err != nil {
+			errorHandler(400, err, c)
+			return
+		}
+
+		c.JSON(201, gin.H{"status": "updated", "note": note})
 	}
 }
 

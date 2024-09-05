@@ -165,7 +165,6 @@ func (p *FileProvider) SaveNote(note *Note) error {
 		if e, ok := err.(*os.PathError); ok {
 			return fmt.Errorf("have you created the ./%s dir? err: %s", p.dirName, e)
 		}
-
 		return fmt.Errorf("error writing file: %s", err.Error())
 	}
 
@@ -213,9 +212,14 @@ func (p *FileProvider) LoadNote(id guid.Guid) (*Note, error) {
 	// Find the note by ID
 	// TODO: load from file
 	if note, exists := p.notes[id.String()]; exists {
+		notePath := path.Join(p.dirName, id.String()+".md")
+		data, err := os.ReadFile(notePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read note, %s", err)
+		}
+		note.Contents = string(data)
 		return note, nil
 	}
-
 	return nil, fmt.Errorf("note %s not found", id.String())
 }
 
@@ -232,7 +236,9 @@ func (p *FileProvider) UpdateNote(id guid.Guid, updatedNote *Note) error {
 	p.notes[id.String()] = updatedNote
 
 	// Write update to file
-
+	if err := os.WriteFile(path.Join(p.dirName, id.String()+".md"), []byte(updatedNote.Contents), 0644); err != nil {
+		return fmt.Errorf("failed to write file to disk, %s", err)
+	}
 	p.saveMetadata()
 	return nil
 }
