@@ -106,6 +106,8 @@ func (a *API) updateNoteHandler() gin.HandlerFunc {
 			return
 		}
 
+        // TODO: Allow only some data to be updated instead of all
+
 		// Update the note
 		note.ID = id
 		note.LastUpdated = time.Now().UTC()
