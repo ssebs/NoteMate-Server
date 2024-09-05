@@ -66,44 +66,44 @@ func NewFileProvider(dirName, jsonConfigFullPath string) *FileProvider {
 	// Load metadata from file
 	if err := fp.loadMetadata(); err != nil {
 		// TODO: log warn
-		fmt.Println(err)
+		log.Fatal(fmt.Errorf("could not read metadata, err: %s", err))
 	}
-	// List local files
-	// oslistdir => for each => cmp guid to metadata map => generate meta from os stat if not found => add
-
-	files, err := os.ReadDir(fp.dirName)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, file := range files {
-		info, _ := file.Info()
-		// Check if guid from filename is in notes map, if not then generate skel meta and save
-		fmt.Println("filename:", info.Name())
-		fmt.Println("updated at:", info.ModTime())
-		g, _ := strings.CutSuffix(file.Name(), ".md")
-		fmt.Println("guid:", g)
-
-		if _, exists := fp.notes[g]; !exists {
-			gd, _ := guid.ParseString(g)
-			// Add to medatada and save
-			fp.notes[g] = &Note{
-				ID:          gd,
-				Title:       "",
-				Contents:    "todo: load contents",
-				Author:      "",
-				LastUpdated: info.ModTime().UTC(),
-			}
-			fp.saveMetadata()
-		}
-
-		// Update metadata if needed
-	}
-
+	// Load metadata from local files that may not be in state
+	fp.localFileCheck()
 	return fp
 }
 
 func (p *FileProvider) localFileCheck() error {
+	files, err := os.ReadDir(p.dirName)
+	if err != nil {
+		if _, ok := err.(*os.PathError); ok {
+			os.Mkdir(p.dirName, 0664)
+		}
+		log.Fatal(fmt.Errorf("could not read the %q file, err: %s", p.dirName, err))
+	}
 
+	// Check if guid from filename is in notes map, if not then generate skel meta and save
+	for _, file := range files {
+		info, _ := file.Info()
+		if strings.HasSuffix(file.Name(), ".md") {
+			g, _ := strings.CutSuffix(file.Name(), ".md")
+			if _, exists := p.notes[g]; !exists {
+				gd, err := guid.ParseString(g)
+				if err != nil {
+					log.Fatal(fmt.Errorf("failed to parse guid, %s", err))
+				}
+				// Add to metadata and save
+				p.notes[g] = &Note{
+					ID:          gd,
+					Title:       "",
+					Contents:    "todo: load contents",
+					Author:      "",
+					LastUpdated: info.ModTime().UTC(),
+				}
+				p.saveMetadata()
+			}
+		}
+	}
 	return nil
 }
 
