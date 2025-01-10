@@ -53,6 +53,8 @@ This repo is a part of a larger PadPal project. The following is a list of the r
   - Metadata to list files and latest timestamp
   - HTTP to send/recv files
   - Websockets to listen for updates? or service worker? or http polling?
+- collaboration and auth:
+  - look into SpiceDB!
 - Host web editor on the server
 - Config file
 - Saves files locally
